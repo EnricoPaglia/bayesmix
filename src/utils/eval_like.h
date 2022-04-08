@@ -22,7 +22,7 @@ Eigen::MatrixXd eval_lpdf_parallel(
     const Eigen::MatrixXd &grid,
     const Eigen::RowVectorXd &hier_covariate = Eigen::RowVectorXd(0),
     const Eigen::RowVectorXd &mix_covariate = Eigen::RowVectorXd(0),
-    const bool low_memory = false, const int njobs = 4,
+    const bool low_memory = false, const int njobs = 1,
     const int chunk_size = 100);
 
 namespace internal {
@@ -49,7 +49,7 @@ Eigen::MatrixXd eval_lpdf_parallel_fullmemory(
     const Eigen::MatrixXd &grid,
     const Eigen::RowVectorXd &hier_covariate = Eigen::RowVectorXd(0),
     const Eigen::RowVectorXd &mix_covariate = Eigen::RowVectorXd(0),
-    const int njobs = 4);
+    const int njobs = 1);
 }  // namespace internal
 
 }  // namespace bayesmix

@@ -7,6 +7,8 @@ target_sources(bayesmix
     lin_reg_uni_hierarchy.cc
     nnig_hierarchy.h
     nnig_hierarchy.cc
+    nnig_python_hierarchy.h
+    nnig_python_hierarchy.cpp
     nnw_hierarchy.h
     nnw_hierarchy.cc
     fa_hierarchy.h

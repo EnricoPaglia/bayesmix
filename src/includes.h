@@ -14,6 +14,7 @@
 #include "hierarchies/load_hierarchies.h"
 #include "hierarchies/fa_hierarchy.h"
 #include "hierarchies/nnig_hierarchy.h"
+#include "hierarchies/nnig_python_hierarchy.h"
 #include "hierarchies/nnw_hierarchy.h"
 #include "mixings/dirichlet_mixing.h"
 #include "mixings/load_mixings.h"

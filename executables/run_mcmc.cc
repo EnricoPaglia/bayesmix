@@ -6,6 +6,14 @@
 #include "lib/argparse/argparse.h"
 #include "src/includes.h"
 
+#include <pybind11/embed.h>
+#include <pybind11/pybind11.h>
+#include <memory>
+
+
+namespace py = pybind11;
+using namespace py::literals;
+
 #define EMPTYSTR std::string("\"\"")
 
 bool check_args(const argparse::ArgumentParser &args) {
@@ -30,6 +38,10 @@ bool check_args(const argparse::ArgumentParser &args) {
 }
 
 int main(int argc, char *argv[]) {
+
+    py::scoped_interpreter guard{};
+    py::print("Hello from Python");
+
   argparse::ArgumentParser args("bayesmix::run");
 
   args.add_argument("--algo-params-file")

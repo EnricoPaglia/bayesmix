@@ -10,6 +10,7 @@
 #include "lapnig_hierarchy.h"
 #include "lin_reg_uni_hierarchy.h"
 #include "nnig_hierarchy.h"
+#include "nnig_python_hierarchy.h"
 #include "nnw_hierarchy.h"
 #include "src/runtime/factory.h"
 
@@ -27,6 +28,9 @@ __attribute__((constructor)) static void load_hierarchies() {
   Builder<AbstractHierarchy> NNIGbuilder = []() {
     return std::make_shared<NNIGHierarchy>();
   };
+  Builder<AbstractHierarchy> NNIG_PYTHONbuilder = []() {
+      return std::make_shared<NNIG_PYTHONHierarchy>();
+  };
   Builder<AbstractHierarchy> NNWbuilder = []() {
     return std::make_shared<NNWHierarchy>();
   };
@@ -43,6 +47,7 @@ __attribute__((constructor)) static void load_hierarchies() {
   factory.add_builder(LapNIGHierarchy().get_id(), LapNIGbuilder);
   factory.add_builder(LinRegUniHierarchy().get_id(), LinRegUnibuilder);
   factory.add_builder(NNIGHierarchy().get_id(), NNIGbuilder);
+  factory.add_builder(NNIG_PYTHONHierarchy().get_id(), NNIG_PYTHONbuilder);
   factory.add_builder(NNWHierarchy().get_id(), NNWbuilder);
   factory.add_builder(FAHierarchy().get_id(), FAbuilder);
 }

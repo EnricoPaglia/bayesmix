@@ -37,3 +37,8 @@ message FAState {
   Matrix eta = 3;
   Matrix lambda = 4;
 }
+
+message VectorState {
+  int32 size = 1; // number of elements in the vector
+  repeated double data = 2 [packed = true]; // vector elements
+}

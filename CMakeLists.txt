@@ -20,6 +20,7 @@ set(CMAKE_FIND_PACKAGE_PREFER_CONFIG TRUE)
 # Require PkgConfig
 find_package(PkgConfig REQUIRED)
 find_package(OpenMP REQUIRED)
+find_package(pybind11 REQUIRED)
 
 # TBB CMake integration
 message(STATUS "Using math TBB")
@@ -145,7 +146,9 @@ target_sources(bayesmix PUBLIC ${PROTO_SRCS} ${PROTO_HDRS})
 add_subdirectory(src)
 target_include_directories(bayesmix PUBLIC ${INCLUDE_PATHS})
 target_link_libraries(bayesmix PUBLIC ${LINK_LIBRARIES})
+target_link_libraries(bayesmix PRIVATE pybind11::embed pybind11::pybind11)
 target_compile_options(bayesmix PUBLIC ${COMPILE_OPTIONS})
+target_compile_options(bayesmix PUBLIC -fvisibility=hidden)
 
 # Build static library
 add_library(bayesmixlib $<TARGET_OBJECTS:bayesmix>)
@@ -155,7 +158,9 @@ if (BUILD_RUN)
   add_executable(run_mcmc $<TARGET_OBJECTS:bayesmix> executables/run_mcmc.cc)
   target_include_directories(run_mcmc PUBLIC ${INCLUDE_PATHS})
   target_link_libraries(run_mcmc PUBLIC ${LINK_LIBRARIES})
+  target_link_libraries(run_mcmc PRIVATE pybind11::embed pybind11::pybind11)
   target_compile_options(run_mcmc PUBLIC ${COMPILE_OPTIONS})
+  target_compile_options(run_mcmc PUBLIC -fvisibility=hidden)
 endif()
 
 if (NOT DISABLE_TESTS)
@@ -202,7 +207,9 @@ if (NOT DISABLE_PLOTS)
     target_include_directories(plot_mcmc PUBLIC
       ${INCLUDE_PATHS} ${matplotplusplus_SOURCE_DIR}/source)
   target_link_libraries(plot_mcmc PUBLIC ${LINK_LIBRARIES} matplot)
+  target_link_libraries(plot_mcmc PRIVATE pybind11::embed pybind11::pybind11)
   target_compile_options(plot_mcmc PUBLIC ${COMPILE_OPTIONS})
+  target_compile_options(plot_mcmc PUBLIC -fvisibility=hidden)
 endif()
 
 if (NOT DISABLE_EXAMPLES)
