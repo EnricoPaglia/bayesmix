@@ -32,7 +32,6 @@ class Rng {
 
   //! Returns a reference to the underlying RNG object
   std::mt19937_64 &get() { return mt; }
-  py::object &get_py() {return py_mt; }
 
   //! Sets the RNG seed
   void seed(const int seed_val) { mt.seed(seed_val); }
@@ -45,10 +44,6 @@ class Rng {
 
   //! C++ standard library RNG object
   std::mt19937_64 mt;
-  //! Python generator
-  py::module_ numpy_random = py::module_::import("numpy.random");
-  py::object py_engine = numpy_random.attr("MT19937")();
-  py::object py_mt = numpy_random.attr("Generator")(py_engine);
 };
 }  // namespace bayesmix
 
