@@ -45,7 +45,7 @@ message AlgorithmState {
       MultiNormalIGDistribution lin_reg_uni_state = 4;
       LapNIGState lapnig_state = 6;
       FAPriorDistribution fa_state = 7;
-      NIGDistribution nnig_python_state = 8;
+      GenericDistribution nnig_python_state = 8;
     }
   }
   HierarchyHypers hierarchy_hypers = 5; // The current values of the hyperparameters of the hierarchy

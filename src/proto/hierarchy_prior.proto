@@ -32,30 +32,6 @@ message NNIGPrior {
 }
 
 
-message NNIG_PYTHONPrior {
-
-  message NormalMeanPrior {
-    UniNormalDistribution mean_prior = 1;
-    double var_scaling = 2;
-    double shape = 3;
-    double scale = 4;
-  }
-
-  message NGGPrior {
-    UniNormalDistribution mean_prior = 1;
-    GammaDistribution var_scaling_prior = 2;
-    double shape = 3;
-    GammaDistribution scale_prior = 4;
-  }
-
-  oneof prior {
-    NIGDistribution fixed_values = 1; // no prior, just fixed values
-    NormalMeanPrior normal_mean_prior = 2; // prior on the mean
-    NGGPrior ngg_prior = 3; // prior on the mean, var_scaling, and scale
-  }
-}
-
-
 /*
  * Prior for the parameters of the base measure in a Laplace - Normal Inverse Gamma hierarchy
  */
@@ -129,4 +105,10 @@ message FAPrior {
 
 message EmptyPrior {
   double fake_field = 1;
+}
+
+message NNIG_PYTHONPrior{
+  oneof prior {
+    GenericDistribution values = 1; // no prior, just fixed values
+  }
 }

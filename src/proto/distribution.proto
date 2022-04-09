@@ -82,3 +82,8 @@ message MultiNormalIGDistribution {
   double shape = 3;
   double scale = 4;
 }
+
+message GenericDistribution{
+  int32 size = 1; // number of elements in the vector
+  repeated double data = 2 [packed = true]; // vector elements
+}

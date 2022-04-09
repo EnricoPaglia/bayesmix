@@ -41,7 +41,7 @@ namespace NNIG_PYTHON {
 
 //! Custom container for Hyperparameters values
     struct Hyperparams {
-        double mean, var_scaling, shape, scale;
+        std::vector<double> generic_hypers;
     };
 
 };  // namespace NNIG_PYTHON
