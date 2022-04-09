@@ -12,6 +12,13 @@
 #include "hierarchy_id.pb.h"
 #include "hierarchy_prior.pb.h"
 
+#include <pybind11/embed.h>
+#include <pybind11/pybind11.h>
+
+
+namespace py = pybind11;
+using namespace py::literals;
+
 //! Conjugate Normal Normal-InverseGamma hierarchy for univariate data.
 
 //! This class represents a hierarchical model where data are distributed

@@ -14,6 +14,12 @@
 namespace py = pybind11;
 using namespace py::literals;
 
+
+py::scoped_interpreter guard{};
+py::module_ numpy_random = py::module_::import("numpy.random");
+py::object py_engine = numpy_random.attr("MT19937")();
+py::object py_gen = numpy_random.attr("Generator")(py_engine);
+
 #define EMPTYSTR std::string("\"\"")
 
 bool check_args(const argparse::ArgumentParser &args) {
@@ -39,7 +45,6 @@ bool check_args(const argparse::ArgumentParser &args) {
 
 int main(int argc, char *argv[]) {
 
-    py::scoped_interpreter guard{};
     py::print("Hello from Python");
 
   argparse::ArgumentParser args("bayesmix::run");
