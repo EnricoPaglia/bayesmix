@@ -23,7 +23,6 @@ extern py::object py_engine;
 extern py::object py_gen;
 
 double NNIG_PYTHONHierarchy::like_lpdf(const Eigen::RowVectorXd &datum) const {
-    std::cout << py_gen.attr("normal")(0,1).cast<double>() << std::endl;
     return stan::math::normal_lpdf(datum(0), state.generic_state[0], sqrt(state.generic_state[1]));
 }
 
