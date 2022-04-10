@@ -43,14 +43,11 @@ void NNIG_PYTHONHierarchy::initialize_state() {
 void NNIG_PYTHONHierarchy::initialize_hypers() {
     if (prior->has_values()) {
         // Set values
-        std::cout << (prior->values().data())[0] << std::endl;
-        std::cout << (prior->values().data())[1] << std::endl;
-        std::cout << (prior->values().data())[2] << std::endl;
-        std::cout << (prior->values().data())[3] << std::endl;
-        hypers->generic_hypers[0] = (prior->values().data())[0];
-        hypers->generic_hypers[1] = (prior->values().data())[1];
-        hypers->generic_hypers[2] = (prior->values().data())[2];
-        hypers->generic_hypers[3] = (prior->values().data())[3];
+        hypers->generic_hypers.clear();
+        hypers->generic_hypers.push_back((prior->values().data())[0]);
+        hypers->generic_hypers.push_back((prior->values().data())[1]);
+        hypers->generic_hypers.push_back((prior->values().data())[2]);
+        hypers->generic_hypers.push_back((prior->values().data())[3]);
         // Check validity
         if (hypers->generic_hypers[1] <= 0) {
             throw std::invalid_argument("Variance-scaling parameter must be > 0");
