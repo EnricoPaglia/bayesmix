@@ -22,10 +22,12 @@ extern py::module_ numpy_random;
 extern py::object py_engine;
 extern py::object py_gen;
 
+//! PYTHON
 double NNIG_PYTHONHierarchy::like_lpdf(const Eigen::RowVectorXd &datum) const {
     return stan::math::normal_lpdf(datum(0), state.generic_state[0], sqrt(state.generic_state[1]));
 }
 
+//! PYTHON
 double NNIG_PYTHONHierarchy::marg_lpdf(const NNIG_PYTHON::Hyperparams &params,
                                        const Eigen::RowVectorXd &datum) const {
     double sig_n = sqrt(params.generic_hypers[3] * (params.generic_hypers[1] + 1) /
@@ -34,33 +36,26 @@ double NNIG_PYTHONHierarchy::marg_lpdf(const NNIG_PYTHON::Hyperparams &params,
                                       sig_n);
 }
 
+//! PYTHON
 void NNIG_PYTHONHierarchy::initialize_state() {
     state.generic_state.clear();
     state.generic_state.push_back(hypers->generic_hypers[0]);
     state.generic_state.push_back(hypers->generic_hypers[3] / (hypers->generic_hypers[2] + 1));
 }
 
+//! C++
 void NNIG_PYTHONHierarchy::initialize_hypers() {
     if (prior->has_values()) {
         // Set values
         hypers->generic_hypers.clear();
-        hypers->generic_hypers.push_back((prior->values().data())[0]);
-        hypers->generic_hypers.push_back((prior->values().data())[1]);
-        hypers->generic_hypers.push_back((prior->values().data())[2]);
-        hypers->generic_hypers.push_back((prior->values().data())[3]);
-        // Check validity
-        if (hypers->generic_hypers[1] <= 0) {
-            throw std::invalid_argument("Variance-scaling parameter must be > 0");
-        }
-        if (hypers->generic_hypers[2] <= 0) {
-            throw std::invalid_argument("Shape parameter must be > 0");
-        }
-        if (hypers->generic_hypers[3] <= 0) {
-            throw std::invalid_argument("scale parameter must be > 0");
+        int size = prior->values().size();
+        for(int i = 0; i < size; ++i){
+            hypers->generic_hypers.push_back((prior->values().data())[i]);
         }
     }
 }
 
+//! PYTHON
 void NNIG_PYTHONHierarchy::update_hypers(
         const std::vector <bayesmix::AlgorithmState::ClusterState> &states) {
     auto &rng = bayesmix::Rng::Instance().get();
@@ -68,6 +63,7 @@ void NNIG_PYTHONHierarchy::update_hypers(
         return;
 }
 
+//! PYTHON
 NNIG_PYTHON::State NNIG_PYTHONHierarchy::draw(const NNIG_PYTHON::Hyperparams &params) {
     auto &rng = bayesmix::Rng::Instance().get();
     NNIG_PYTHON::State out;
@@ -78,6 +74,7 @@ NNIG_PYTHON::State NNIG_PYTHONHierarchy::draw(const NNIG_PYTHON::Hyperparams &pa
     return out;
 }
 
+//! ?
 void NNIG_PYTHONHierarchy::update_summary_statistics(const Eigen::RowVectorXd &datum,
                                                      const bool add) {
     if (add) {
@@ -89,11 +86,13 @@ void NNIG_PYTHONHierarchy::update_summary_statistics(const Eigen::RowVectorXd &d
     }
 }
 
+//! ?
 void NNIG_PYTHONHierarchy::clear_summary_statistics() {
     data_sum = 0;
     data_sum_squares = 0;
 }
 
+//! PYTHON
 NNIG_PYTHON::Hyperparams NNIG_PYTHONHierarchy::compute_posterior_hypers() const {
     // Initialize relevant variables
     if (card == 0) {  // no update possible
@@ -114,6 +113,7 @@ NNIG_PYTHON::Hyperparams NNIG_PYTHONHierarchy::compute_posterior_hypers() const 
     return post_params;
 }
 
+//! C++
 void NNIG_PYTHONHierarchy::set_state_from_proto(
         const google::protobuf::Message &state_) {
     auto &statecast = downcast_state(state_);
@@ -126,6 +126,7 @@ void NNIG_PYTHONHierarchy::set_state_from_proto(
     set_card(statecast.cardinality());
 }
 
+//! C++
 std::shared_ptr <bayesmix::AlgorithmState::ClusterState>
 NNIG_PYTHONHierarchy::get_state_proto() const {
     bayesmix::VectorState state_;
@@ -136,6 +137,7 @@ NNIG_PYTHONHierarchy::get_state_proto() const {
     return out;
 }
 
+//! C++
 void NNIG_PYTHONHierarchy::set_hypers_from_proto(
         const google::protobuf::Message &hypers_) {
     auto &hyperscast = downcast_hypers(hypers_).nnig_python_state();
@@ -147,6 +149,7 @@ void NNIG_PYTHONHierarchy::set_hypers_from_proto(
     hypers->generic_hypers = aux_v;
 }
 
+//! C++
 std::shared_ptr <bayesmix::AlgorithmState::HierarchyHypers>
 NNIG_PYTHONHierarchy::get_hypers_proto() const {
     bayesmix::GenericDistribution hypers_;
