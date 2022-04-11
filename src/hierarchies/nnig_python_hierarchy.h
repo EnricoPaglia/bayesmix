@@ -2,6 +2,8 @@
 #define BAYESMIX_HIERARCHIES_NNIG_PYTHON_HIERARCHY_H_
 
 #include <google/protobuf/stubs/casts.h>
+#include <pybind11/embed.h>
+#include <pybind11/pybind11.h>
 
 #include <Eigen/Dense>
 #include <memory>
@@ -11,10 +13,6 @@
 #include "conjugate_hierarchy.h"
 #include "hierarchy_id.pb.h"
 #include "hierarchy_prior.pb.h"
-
-#include <pybind11/embed.h>
-#include <pybind11/pybind11.h>
-
 
 namespace py = pybind11;
 using namespace py::literals;
@@ -35,95 +33,96 @@ using namespace py::literals;
 
 namespace NNIG_PYTHON {
 //! Custom container for State values
-    struct State {
-        std::vector<double> generic_state;
-    };
+struct State {
+  std::vector<double> generic_state;
+};
 
 //! Custom container for Hyperparameters values
-    struct Hyperparams {
-        std::vector<double> generic_hypers;
-    };
+struct Hyperparams {
+  std::vector<double> generic_hypers;
+};
 
 };  // namespace NNIG_PYTHON
 
 class NNIG_PYTHONHierarchy
-        : public ConjugateHierarchy<NNIG_PYTHONHierarchy, NNIG_PYTHON::State, NNIG_PYTHON::Hyperparams,
-                bayesmix::NNIG_PYTHONPrior> {
-public:
-    NNIG_PYTHONHierarchy() = default;
-    ~NNIG_PYTHONHierarchy() = default;
+    : public ConjugateHierarchy<NNIG_PYTHONHierarchy, NNIG_PYTHON::State,
+                                NNIG_PYTHON::Hyperparams,
+                                bayesmix::NNIG_PYTHONPrior> {
+ public:
+  NNIG_PYTHONHierarchy() = default;
+  ~NNIG_PYTHONHierarchy() = default;
 
-    //! Updates hyperparameter values given a vector of cluster states
-    void update_hypers(const std::vector<bayesmix::AlgorithmState::ClusterState>
-                       &states) override;
+  //! Updates hyperparameter values given a vector of cluster states
+  void update_hypers(const std::vector<bayesmix::AlgorithmState::ClusterState>
+                         &states) override;
 
-    //! Updates state values using the given (prior or posterior) hyperparameters
-    NNIG_PYTHON::State draw(const NNIG_PYTHON::Hyperparams &params);
+  //! Updates state values using the given (prior or posterior) hyperparameters
+  NNIG_PYTHON::State draw(const NNIG_PYTHON::Hyperparams &params);
 
-    //! Resets summary statistics for this cluster
-    void clear_summary_statistics() override;
+  //! Resets summary statistics for this cluster
+  void clear_summary_statistics() override;
 
-    //! Returns the Protobuf ID associated to this class
-    bayesmix::HierarchyId get_id() const override {
-        return bayesmix::HierarchyId::NNIG_PYTHON;
-    }
+  //! Returns the Protobuf ID associated to this class
+  bayesmix::HierarchyId get_id() const override {
+    return bayesmix::HierarchyId::NNIG_PYTHON;
+  }
 
-    //! Read and set state values from a given Protobuf message
-    void set_state_from_proto(const google::protobuf::Message &state_) override;
+  //! Read and set state values from a given Protobuf message
+  void set_state_from_proto(const google::protobuf::Message &state_) override;
 
-    //! Read and set hyperparameter values from a given Protobuf message
-    void set_hypers_from_proto(
-            const google::protobuf::Message &hypers_) override;
+  //! Read and set hyperparameter values from a given Protobuf message
+  void set_hypers_from_proto(
+      const google::protobuf::Message &hypers_) override;
 
-    //! Writes current state to a Protobuf message and return a shared_ptr
-    //! New hierarchies have to first modify the field 'oneof val' in the
-    //! AlgoritmState::ClusterState message by adding the appropriate type
-    std::shared_ptr<bayesmix::AlgorithmState::ClusterState> get_state_proto()
-    const override;
+  //! Writes current state to a Protobuf message and return a shared_ptr
+  //! New hierarchies have to first modify the field 'oneof val' in the
+  //! AlgoritmState::ClusterState message by adding the appropriate type
+  std::shared_ptr<bayesmix::AlgorithmState::ClusterState> get_state_proto()
+      const override;
 
-    //! Writes current value of hyperparameters to a Protobuf message and
-    //! return a shared_ptr.
-    //! New hierarchies have to first modify the field 'oneof val' in the
-    //! AlgoritmState::HierarchyHypers message by adding the appropriate type
-    std::shared_ptr<bayesmix::AlgorithmState::HierarchyHypers> get_hypers_proto()
-    const override;
+  //! Writes current value of hyperparameters to a Protobuf message and
+  //! return a shared_ptr.
+  //! New hierarchies have to first modify the field 'oneof val' in the
+  //! AlgoritmState::HierarchyHypers message by adding the appropriate type
+  std::shared_ptr<bayesmix::AlgorithmState::HierarchyHypers> get_hypers_proto()
+      const override;
 
-    //! Computes and return posterior hypers given data currently in this cluster
-    NNIG_PYTHON::Hyperparams compute_posterior_hypers() const;
+  //! Computes and return posterior hypers given data currently in this cluster
+  NNIG_PYTHON::Hyperparams compute_posterior_hypers() const;
 
-    //! Returns whether the hierarchy models multivariate data or not
-    bool is_multivariate() const override { return false; }
+  //! Returns whether the hierarchy models multivariate data or not
+  bool is_multivariate() const override { return false; }
 
-protected:
-    //! Evaluates the log-likelihood of data in a single point
-    //! @param datum      Point which is to be evaluated
-    //! @return           The evaluation of the lpdf
-    double like_lpdf(const Eigen::RowVectorXd &datum) const override;
+ protected:
+  //! Evaluates the log-likelihood of data in a single point
+  //! @param datum      Point which is to be evaluated
+  //! @return           The evaluation of the lpdf
+  double like_lpdf(const Eigen::RowVectorXd &datum) const override;
 
-    //! Evaluates the log-marginal distribution of data in a single point
-    //! @param params     Container of (prior or posterior) hyperparameter values
-    //! @param datum      Point which is to be evaluated
-    //! @return           The evaluation of the lpdf
-    double marg_lpdf(const NNIG_PYTHON::Hyperparams &params,
-                     const Eigen::RowVectorXd &datum) const override;
+  //! Evaluates the log-marginal distribution of data in a single point
+  //! @param params     Container of (prior or posterior) hyperparameter values
+  //! @param datum      Point which is to be evaluated
+  //! @return           The evaluation of the lpdf
+  double marg_lpdf(const NNIG_PYTHON::Hyperparams &params,
+                   const Eigen::RowVectorXd &datum) const override;
 
-    //! Updates cluster statistics when a datum is added or removed from it
-    //! @param datum      Data point which is being added or removed
-    //! @param add        Whether the datum is being added or removed
-    void update_summary_statistics(const Eigen::RowVectorXd &datum,
-                                   const bool add) override;
+  //! Updates cluster statistics when a datum is added or removed from it
+  //! @param datum      Data point which is being added or removed
+  //! @param add        Whether the datum is being added or removed
+  void update_summary_statistics(const Eigen::RowVectorXd &datum,
+                                 const bool add) override;
 
-    //! Initializes state parameters to appropriate values
-    void initialize_state() override;
+  //! Initializes state parameters to appropriate values
+  void initialize_state() override;
 
-    //! Initializes hierarchy hyperparameters to appropriate values
-    void initialize_hypers() override;
+  //! Initializes hierarchy hyperparameters to appropriate values
+  void initialize_hypers() override;
 
-    //! Sum of data points currently belonging to the cluster
-    double data_sum = 0;
+  //! Sum of data points currently belonging to the cluster
+  double data_sum = 0;
 
-    //! Sum of squared data points currently belonging to the cluster
-    double data_sum_squares = 0;
+  //! Sum of squared data points currently belonging to the cluster
+  double data_sum_squares = 0;
 };
 
 #endif  // BAYESMIX_HIERARCHIES_NNIG_PYTHON_HIERARCHY_H_

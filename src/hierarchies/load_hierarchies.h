@@ -29,7 +29,7 @@ __attribute__((constructor)) static void load_hierarchies() {
     return std::make_shared<NNIGHierarchy>();
   };
   Builder<AbstractHierarchy> NNIG_PYTHONbuilder = []() {
-      return std::make_shared<NNIG_PYTHONHierarchy>();
+    return std::make_shared<NNIG_PYTHONHierarchy>();
   };
   Builder<AbstractHierarchy> NNWbuilder = []() {
     return std::make_shared<NNWHierarchy>();
